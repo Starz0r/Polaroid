@@ -1,0 +1,13 @@
+version: '2'
+
+vars:
+    BUILD_OUTNAME: service.o
+
+tasks:
+    build:
+        cmds:
+            - go version
+            - go env
+            - packr
+            - CGO_ENABLED=0 GO111MODULE=on go build -i -v -a -installsuffix cgo -ldflags '-extldflags "-static"' -o {{.BUILD_OUTNAME}} ./src/
+            - packr clean
