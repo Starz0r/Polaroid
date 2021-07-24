@@ -15,7 +15,7 @@ WORKDIR /build
 
 # Compile
 ENV GO111MODULE=on
-RUN task build OUTNAME=service
+RUN task build BUILD_OUTNAME=service
 
 # Move to Base Image and Run
 FROM alpine:3.12.0
