@@ -14,6 +14,7 @@ var (
 	ctx                  context.Context
 	NonceEnabledVerifier *oidc.IDTokenVerifier
 	State                string
+	Nonce                string
 )
 
 func GetConfiguration() error {
@@ -38,6 +39,7 @@ func GetConfiguration() error {
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
 	}
 
+	Nonce = crypto.String(32)
 	State = crypto.String(16)
 
 	return nil
