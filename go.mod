@@ -10,5 +10,9 @@ require (
 	github.com/minio/minio-go/v6 v6.0.57
 	github.com/natefinch/lumberjack v2.0.0+incompatible // indirect
 	github.com/pelletier/go-toml v1.9.3
+	github.com/pquerna/cachecontrol v0.1.0 // indirect
 	github.com/spidernest-go/logger v0.0.0-20191128190838-520d89ea00af
+	golang.org/x/net v0.0.0-20201029221708-28c70e62bb1d
+	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
+	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
 )
