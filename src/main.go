@@ -6,6 +6,7 @@ import (
 	"github.com/Starz0r/Polaroid/src/auth"
 	"github.com/Starz0r/Polaroid/src/crypto"
 	"github.com/Starz0r/Polaroid/src/database"
+	"github.com/Starz0r/Polaroid/src/routers"
 )
 
 func main() {
@@ -28,4 +29,6 @@ func main() {
 		logger.Fatal().Err(err).Msg("Authentication module failed to initialize.")
 	}
 	logger.Info().Msg("OpenID Connect server has been configured for use.")
+
+	routers.ListenAndServe()
 }

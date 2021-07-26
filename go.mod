@@ -12,6 +12,7 @@ require (
 	github.com/pelletier/go-toml v1.9.3
 	github.com/pquerna/cachecontrol v0.1.0 // indirect
 	github.com/spidernest-go/logger v0.0.0-20191128190838-520d89ea00af
+	github.com/spidernest-go/mux v0.0.0-20201128044825-fb21d0a8ad81
 	golang.org/x/net v0.0.0-20201029221708-28c70e62bb1d
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	gopkg.in/square/go-jose.v2 v2.6.0 // indirect
