@@ -5,6 +5,10 @@ import (
 	"github.com/spidernest-go/mux/middleware"
 )
 
+type RespError struct {
+	Err string `json:"err"`
+}
+
 func ListenAndServe() {
 	r := echo.New()
 	r.BodyLimit(32 * 1024 * 1024) // 32 MB
