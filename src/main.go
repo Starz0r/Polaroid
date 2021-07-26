@@ -19,11 +19,12 @@ func main() {
 	}
 	logger.Info().Msg("Connected to the database successfully.")
 
-	err = database.Synchronize()
+	//TODO: migrations don't work on postgresql, unsurprisingly.
+	/*err = database.Synchronize()
 	if err != nil {
 		logger.Fatal().Err(err).Msg("Database module failed to apply migrations.")
 	}
-	logger.Info().Msg("Database migrations have been applied.")
+	logger.Info().Msg("Database migrations have been applied.")*/
 
 	err = crypto.InitRandomPool()
 	if err != nil {
