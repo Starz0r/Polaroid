@@ -44,5 +44,8 @@ func main() {
 	}
 	logger.Info().Msg("Using the Object Storage bucket.")
 
-	routers.ListenAndServe()
+	err = routers.ListenAndServe()
+	if err != nil {
+		logger.Fatal().Err(err).Msg("Router module failed to start.")
+	}
 }
