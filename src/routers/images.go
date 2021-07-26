@@ -2,11 +2,19 @@ package routers
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/Starz0r/Polaroid/src/database"
 	"github.com/Starz0r/Polaroid/src/objstore"
 	echo "github.com/spidernest-go/mux"
 )
+
+var S3URL = os.Getenv("S3_ENDPOINT")
+var S3BUCKET = os.Getenv("S3_BUCKET")
+
+type Image struct {
+	URL string
+}
 
 func uploadImage(c echo.Context) error {
 	// check if authorized
@@ -39,4 +47,13 @@ func uploadImage(c echo.Context) error {
 	}
 
 	return c.String(http.StatusAccepted, "")
+}
+
+func getImage(c echo.Context) error {
+	img := c.Param("img")
+	return c.Render(http.StatusOK, "i", Image{
+		URL: "http://" +
+			S3URL + "/" +
+			S3BUCKET + "/" +
+			img})
 }
