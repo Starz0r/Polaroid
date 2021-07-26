@@ -11,6 +11,7 @@ import (
 
 var S3URL = os.Getenv("S3_ENDPOINT")
 var S3BUCKET = os.Getenv("S3_BUCKET")
+var S3PREFIX = os.Getenv("S3_ENDPOINT_PREFIX")
 
 type Image struct {
 	URL string
@@ -52,7 +53,7 @@ func uploadImage(c echo.Context) error {
 func getImage(c echo.Context) error {
 	img := c.Param("img")
 	return c.Render(http.StatusOK, "i", Image{
-		URL: "http://" +
+		URL: S3PREFIX +
 			S3URL + "/" +
 			S3BUCKET + "/" +
 			img})
