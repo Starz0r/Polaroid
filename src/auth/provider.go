@@ -11,15 +11,15 @@ import (
 
 var (
 	Authenticator        oauth2.Config
-	ctx                  context.Context
+	Ctx                  context.Context
 	NonceEnabledVerifier *oidc.IDTokenVerifier
 	State                string
 	Nonce                string
 )
 
 func GetConfiguration() error {
-	ctx = context.Background()
-	provider, err := oidc.NewProvider(ctx, os.Getenv("OIDC_URL"))
+	Ctx = context.Background()
+	provider, err := oidc.NewProvider(Ctx, os.Getenv("OIDC_URL"))
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func GetConfiguration() error {
 		ClientID:     cid,
 		ClientSecret: os.Getenv("OIDC_CLIENT_SECRET"),
 		Endpoint:     provider.Endpoint(),
-		RedirectURL:  "http://localhost:6000/api/v0/oidc/callback",
+		RedirectURL:  os.Getenv("OIDC_REDIRECT_URL"),
 		Scopes:       []string{oidc.ScopeOpenID, "profile", "email"},
 	}
 
