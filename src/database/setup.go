@@ -1,55 +1,36 @@
 package database
 
 import (
-	"bytes"
-	"database/sql"
-	"io"
 	"os"
 
-	_ "github.com/lib/pq"
+	"github.com/spidernest-go/db/lib/sqlbuilder"
+	"github.com/spidernest-go/db/postgresql"
 )
 
-var DB *sql.DB
+var DB sqlbuilder.Database
 
 func Connect() error {
-	// get env vars
-	host := os.Getenv("PQ_HOST")
-	database := os.Getenv("PQ_DB")
-	port := os.Getenv("PQ_PORT")
-	user := os.Getenv("PQ_USER")
-	pass := os.Getenv("PQ_PASS")
+	// constuct the url
+	opts := make(map[string]string)
+
 	sslmode := os.Getenv("PQ_SSLMODE")
 	if sslmode == "" {
 		sslmode = "disable"
 	}
 
-	// constuct the url
-	buf := bytes.NewBufferString("postgres://")
+	opts["sslmode"] = sslmode
 
-	buf.WriteString(user)
-	buf.WriteString(":")
-
-	buf.WriteString(pass)
-	buf.WriteString("@")
-
-	buf.WriteString(host)
-	buf.WriteString(":")
-
-	buf.WriteString(port)
-	buf.WriteString("/")
-
-	buf.WriteString(database)
-	buf.WriteString("?sslmode=")
-
-	buf.WriteString(sslmode)
-
-	url, err := buf.ReadString(0)
-	if err != nil && err != io.EOF {
-		return err
+	url := postgresql.ConnectionURL{
+		Host:     os.Getenv("PQ_HOST") + ":" + os.Getenv("PQ_PORT"),
+		Database: os.Getenv("PQ_DB"),
+		User:     os.Getenv("PQ_USER"),
+		Password: os.Getenv("PQ_PASS"),
+		Options:  opts,
 	}
 
 	// connect to database
-	DB, err = sql.Open("postgres", url)
+	err := *new(error)
+	DB, err = postgresql.Open(url)
 	if err != nil {
 		return err
 	}
