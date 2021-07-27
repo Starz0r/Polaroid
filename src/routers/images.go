@@ -2,9 +2,11 @@ package routers
 
 import (
 	"io/ioutil"
+	mime_stdlib "mime"
 	"net/http"
 	"os"
 
+	"github.com/Starz0r/Polaroid/src/crypto"
 	"github.com/Starz0r/Polaroid/src/database"
 	"github.com/Starz0r/Polaroid/src/objstore"
 	echo "github.com/spidernest-go/mux"
@@ -30,7 +32,7 @@ func uploadImage(c echo.Context) error {
 		return c.JSON(http.StatusUnauthorized, RespError{Err: "invalid appkey"})
 	}
 
-	// start the transfer
+	// heuristics
 	imgfile, err := c.FormFile("image")
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, RespError{Err: "image was corrupt or missing"})
@@ -42,7 +44,25 @@ func uploadImage(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, RespError{Err: "file could not be opened"})
 	}
 
-	err = objstore.Upload(file, imgfile.Filename, "public-read")
+	buf, err := ioutil.ReadAll(file)
+	if err != nil {
+		return c.JSON(http.StatusUnprocessableEntity, RespError{Err: "file could not be read"})
+	}
+	mime := http.DetectContentType(buf)
+	mimefext, err := mime_stdlib.ExtensionsByType(mime)
+	if err != nil {
+		return c.JSON(http.StatusUnsupportedMediaType, RespError{Err: "media type did not have a valid extensions"})
+	}
+
+	// start the transfer
+	filename := *new(string)
+	for {
+		filename = crypto.String(6) + mimefext[0]
+		if !objstore.IsNameConflicting(filename) {
+			break
+		}
+	}
+	err = objstore.Upload(file, filename, "public-read", mime)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, RespError{Err: "transfer failed"})
 	}
@@ -65,5 +85,5 @@ func getImage(c echo.Context) error {
 	}
 	mime := http.DetectContentType(body)
 
-	return c.Blob(http.StatusFound, mime, body)
+	return c.Blob(http.StatusOK, mime, body)
 }
