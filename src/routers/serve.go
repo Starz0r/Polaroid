@@ -3,6 +3,7 @@ package routers
 import (
 	"html/template"
 	"io"
+	"net/http"
 
 	"github.com/gobuffalo/packr"
 	echo "github.com/spidernest-go/mux"
@@ -32,7 +33,10 @@ func ListenAndServe() error {
 	r := echo.New()
 	r.Renderer = t
 	r.BodyLimit(32 * 1024 * 1024) // 32 MB
-	r.Use(middleware.Recover())
+	r.Use(middleware.Recover(), middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodOptions},
+	}))
 
 	r.GET("/:img", getImage)
 
