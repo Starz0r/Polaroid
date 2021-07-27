@@ -12,7 +12,7 @@ var BUCKET = os.Getenv("S3_BUCKET")
 func Upload(f io.Reader, fname string, acl string) error {
 	metadata := map[string]string{"x-amz-acl": acl}
 	_, err := SESSION.PutObject(BUCKET,
-		"/"+fname,
+		fname,
 		f,
 		-1,
 		minio.PutObjectOptions{
