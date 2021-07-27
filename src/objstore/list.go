@@ -7,7 +7,7 @@ import (
 func IsNameConflicting(name string) bool {
 	_, err := SESSION.GetObject(BUCKET, name, minio.GetObjectOptions{})
 	if err != nil {
-		return false
+		return true
 	}
-	return true
+	return false
 }
