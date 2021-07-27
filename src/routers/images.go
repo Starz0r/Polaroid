@@ -56,12 +56,12 @@ func uploadImage(c echo.Context) error {
 	}
 
 	// start the transfer
-	filename := *new(string)
+	filename := crypto.StringReadable(6) + mimefext[0]
 	for {
-		filename = crypto.String(6) + mimefext[0]
 		if !objstore.IsNameConflicting(filename) {
 			break
 		}
+		filename = crypto.StringReadable(6) + mimefext[0]
 	}
 	err = objstore.Upload(bytes.NewBuffer(buf), filename, "public-read", mime)
 	if err != nil {
