@@ -10,9 +10,10 @@ import (
 )
 
 var S3PUBLICURL = os.Getenv("S3_PUBLIC_URL")
+var PUBLICURL = os.Getenv("PUBLIC_URL")
 
 type Image struct {
-	URL string
+	URL string `json:"url"`
 }
 
 func uploadImage(c echo.Context) error {
@@ -45,7 +46,7 @@ func uploadImage(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, RespError{Err: "transfer failed"})
 	}
 
-	return c.String(http.StatusAccepted, "")
+	return c.JSON(http.StatusAccepted, Image{URL: PUBLICURL + imgfile.Filename})
 }
 
 func getImage(c echo.Context) error {
