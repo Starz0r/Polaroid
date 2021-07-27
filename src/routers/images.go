@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"bytes"
 	"io/ioutil"
 	mime_stdlib "mime"
 	"net/http"
@@ -44,7 +45,7 @@ func uploadImage(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, RespError{Err: "file could not be opened"})
 	}
 
-	buf, err := ioutil.ReadAll(file)
+	buf, err := ioutil.ReadAll(file) // FIXME: this drains the file, which means we need to make a new buffer to store it later on
 	if err != nil {
 		return c.JSON(http.StatusUnprocessableEntity, RespError{Err: "file could not be read"})
 	}
@@ -62,12 +63,12 @@ func uploadImage(c echo.Context) error {
 			break
 		}
 	}
-	err = objstore.Upload(file, filename, "public-read", mime)
+	err = objstore.Upload(bytes.NewBuffer(buf), filename, "public-read", mime)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, RespError{Err: "transfer failed"})
 	}
 
-	return c.JSON(http.StatusAccepted, Image{URL: PUBLICURL + imgfile.Filename})
+	return c.JSON(http.StatusAccepted, Image{URL: PUBLICURL + filename})
 }
 
 func getImage(c echo.Context) error {
