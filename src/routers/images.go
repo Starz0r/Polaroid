@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"io/ioutil"
 	"net/http"
 	"os"
 
@@ -51,5 +52,18 @@ func uploadImage(c echo.Context) error {
 
 func getImage(c echo.Context) error {
 	img := c.Param("img")
-	return c.Render(http.StatusOK, "i", Image{URL: S3PUBLICURL + img})
+
+	resp, err := http.Get(S3PUBLICURL + img)
+	if err != nil {
+		return c.JSON(http.StatusNotFound, RespError{Err: "no image"})
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, RespError{Err: "file could not be opened"})
+	}
+	mime := http.DetectContentType(body)
+
+	return c.Blob(http.StatusFound, mime, body)
 }
