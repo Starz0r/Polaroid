@@ -42,7 +42,7 @@ func uploadImage(c echo.Context) error {
 		return c.JSON(http.StatusUnprocessableEntity, RespError{Err: "file could not be opened"})
 	}
 
-	err = objstore.Upload(file, imgfile.Filename)
+	err = objstore.Upload(file, imgfile.Filename, "public-read")
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, RespError{Err: "transfer failed"})
 	}
