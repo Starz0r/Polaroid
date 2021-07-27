@@ -9,13 +9,15 @@ import (
 
 var BUCKET = os.Getenv("S3_BUCKET")
 
-func Upload(f io.Reader, fname string) error {
+func Upload(f io.Reader, fname string, acl string) error {
+	metadata := map[string]string{"x-amz-acl": acl}
 	_, err := SESSION.PutObject(BUCKET,
 		"/"+fname,
 		f,
 		-1,
 		minio.PutObjectOptions{
 			ContentEncoding: "brotli",
+			UserMetadata:    metadata,
 		})
 	return err
 }
